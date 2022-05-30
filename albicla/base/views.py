@@ -84,8 +84,10 @@ def home(request):
 
 def room(request, pk):
     room = Room.objects.get(id=pk)
-    context = {"room": room}
+    # get set of all messages related to the room iwth descending order "-"
+    room_messages = room.message_set.all().order_by("-created")
 
+    context = {"room": room, "room_messages": room_messages}
     return render(request, "base/room.html", context)
 
 
