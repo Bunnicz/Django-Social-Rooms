@@ -24,7 +24,7 @@ class Room(models.Model):
     created = models.DateTimeField(auto_now_add=True)  # Initial timestamp
 
     class Meta:
-        # "-" inverts order
+        # Order of getting data from object "-" inverts order
         ordering = ["-updated", "-created"]
 
     def __str__(self):
@@ -39,6 +39,10 @@ class Message(models.Model):
     body = models.TextField()
     updated = models.DateTimeField(auto_now=True)  # updates timestamp everytime
     created = models.DateTimeField(auto_now_add=True)  # Initial timestamp
+
+    class Meta:
+        # Order of getting data from object "-" inverts order
+        ordering = ["-updated", "-created"]
 
     def __str__(self):
         return self.body[0:50]
