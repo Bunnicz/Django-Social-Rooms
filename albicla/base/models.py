@@ -12,18 +12,21 @@ class Topic(models.Model):
 
 
 class Room(models.Model):
-    host = models.ForeignKey(User, on_delete=models.SET_NULL, null=True) # One to many relationship
-    topic = models.ForeignKey(Topic, on_delete=models.SET_NULL, null=True) # One to many relationship
+    # One to many relationship
+    host = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    # One to many relationship
+    topic = models.ForeignKey(Topic, on_delete=models.SET_NULL, null=True)
     name = models.CharField(max_length=200)
     description = models.TextField(null=True, blank=True)
-    # participants =
+    # Many to many relationship
+    participants = models.ManyToManyField(User, related_name="participants", blank=True)
     updated = models.DateTimeField(auto_now=True)  # updates timestamp everytime
     created = models.DateTimeField(auto_now_add=True)  # Initial timestamp
 
     class Meta:
         # "-" inverts order
-        ordering = ['-updated', '-created']
-    
+        ordering = ["-updated", "-created"]
+
     def __str__(self):
         return self.name
 
