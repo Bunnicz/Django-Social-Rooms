@@ -2,7 +2,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q
+from django.db.models import Q, Count
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
@@ -68,13 +68,18 @@ def registerPage(request):
 
 
 def home(request):
+    # Search bar user request
     q = request.GET.get("q") if request.GET.get("q") != None else ""
 
+    # Search bar filter
     rooms = Room.objects.filter(
         Q(topic__name__icontains=q) | Q(name__icontains=q) | Q(description__icontains=q)
     )
 
-    topics = Topic.objects.all()
+    # Show only some Topics and not empty
+    topics = Topic.objects.annotate(num_rooms=Count("room")).filter(num_rooms__gt=0)[
+        0:5
+    ]
     room_count = rooms.count()
     room_messages = Message.objects.filter(Q(room__topic__name__icontains=q))
 
@@ -89,7 +94,7 @@ def home(request):
 
 def room(request, pk):
     room = Room.objects.get(id=pk)
-    # get set of all messages related to the room iwth descending order "-"
+    # get set of all messages related to the room with descending order "-"
     room_messages = room.message_set.all()
     participants = room.participants.all()
 
@@ -220,3 +225,18 @@ def updateUser(request):
 
     context = {"form": form}
     return render(request, "base/update-user.html", context)
+
+
+def topicsPage(request):
+    q = request.GET.get("q") if request.GET.get("q") != None else ""
+    topics = Topic.objects.filter(Q(name__icontains=q))
+
+    context = {"topics": topics}
+    return render(request, "base/topics.html", context)
+
+
+def activityPage(request):
+    room_messages = Message.objects.all()[0:5]
+
+    context = {"room_messages": room_messages}
+    return render(request, "base/activity.html", context)
