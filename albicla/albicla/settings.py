@@ -141,11 +141,10 @@ MEDIA_ROOT = BASE_DIR / "static/images/user_avatars"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Setting this to True can be dangerous, as it allows any website to make cross-origin requests to yours.
-CORS_ALLOW_ALL_ORIGINS = True
+# CORS_ALLOW_ALL_ORIGINS = True
 
-# CORS_ALLOWED_ORIGINS = [
-#     "http://localhost:8080",
-#     "http://127.0.0.1:8000",
-# ]
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+]
 
 CORS_URLS_REGEX = r"^/api/.*$"
